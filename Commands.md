@@ -53,7 +53,6 @@ _In both cases the networking service will need to be restarted._
 ```bash 
 sudo ifdown eth0
 sudo ifup eth0
-
 ```
 
 #### CentOS ####
@@ -92,7 +91,6 @@ xzcat CentOS.raw.xz | sudo dd of=/dev/sde status=progress bs=4M
 dd if=/dev/sdd of=configured-image.img bs=4M status=progress
 
 sync
-
 ```
 
 ### Major issue encountered ###
@@ -103,6 +101,7 @@ Multiple solutions exist but seemingly most stable is the unsupported build proc
 12 hours to rebuild packages on pi.
 .debs precompiled from
 https://louwrentius.com/compiling-ceph-on-the-raspberry-pi-3b-armhf-using-clangllvm.html
+
 ```bash
 dpkg --install *.deb
 apt-get install --fix-missing
@@ -149,7 +148,7 @@ https://www.ssh.com/ssh/copy-id
 
 
 ### Another Major issue: ###
-_Need to create a host file with the nodes and hostnames matching as following_
+_Need to create a host file with the nodes and hostnames matching as following. Without, ceph-deploy will get hung on connections_
 ```
 Host pi1  
    Hostname pi1  
@@ -159,7 +158,7 @@ Host pi1
 
 ### Major issue which followed: ###
 Problem: the dpkg install from the files provided result in dependency issues that
-result in a function ceph-deploy tool, but not underlying Ceph
+result in a function ceph-deploy tool, but a broken implementation of Ceph in the background
 
 Solution:
 Need to reinstall all the OSs with clean dependency trees, do a total reinstal of the OS
@@ -180,12 +179,19 @@ ceph admin pi1 pi2 pi3 # Copy conf on all machines
 
 Now, we need to add OSD to our cluster. For it we will use our usb keys like this:
 
+```
 pi1 : 128 Gb USB 3.0 ( /dev/sda )
 pi2 : 128 Gb USB 3.0  ( /dev/sda )
 pi3 : 128 Gb USB 3.0  ( /dev/sda )
-pi4 : 32 Gb USB 2.0 (/dev/sad)
-We will initialize our keys (still as ceph user):
+pi4 : 32 Gb USB 2.0 (/dev/sda)
+```
 
+### Performance testing of USB keys ###
+```bash
+sudo hdparm -tT /dev/sdb
+sudo hdparm -W 0 /dev/sdb
+lsusb -v -s 2:6 | grep bcdUSB
+```
 
 
 
@@ -196,4 +202,6 @@ competing goals: efficiency and scalability of the mapping
 algorithm, and minimal data migration to restore a balanced
 distribution when the cluster changes due to the addition
 or removal of devices.
+
+
 https://ceph.com/wp-content/uploads/2016/08/weil-crush-sc06.pdf
