@@ -1,10 +1,10 @@
-Interesting commands used and sources of them.
+## Interesting commands used and sources of them. ##
 
-Not all inclusive list of commands.
+_Not all inclusive list of commands._
 
 
 
-Installation guide of RHEL on Mustang X-GENE
+### Installation guide of RHEL on Mustang X-GENE ###
 1) Create 16Gb FAT32 partition on SSD attached to SATA with only empty pace
 2) Place dud ISO image of RHELL on MMC
 3) Enter anaconda set and complete in reverse order
